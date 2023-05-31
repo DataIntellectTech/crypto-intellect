@@ -1,0 +1,14 @@
+bucketing_interval: 1m
+exchanges:
+  - Binance
+  - Kucoin
+  - Poloniex
+  - Kraken
+database_connection: ""
+list_coins_to_pull:
+  - Safemoon
+  - Neo
+  - Optimism
+n_coins_to_pull: 30
+save_to_csv: true
+save_to_database: false

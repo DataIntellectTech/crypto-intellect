@@ -1,0 +1,30 @@
+services:
+    db:
+        container_name: database
+        image: mysql:8.0.30
+        ports:
+            - "3306:3306"
+        environment:
+            - MYSQL_ROOT_PASSWORD=root
+        volumes:
+            - mysqldb:/var/lib/mysql
+        healthcheck:
+            test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+            interval: 20s
+            timeout: 3s
+            retries: 10
+    data:
+        container_name: datacatch
+        links:
+            - "db"
+        build: ./src
+        volumes:
+            - /path/to/local/directory/for/csv_files/csv_folder:/src/csv_folder
+        ports:
+            - "5003:5002"
+        depends_on:
+            db:
+                condition: service_healthy
+
+volumes:
+    mysqldb:
