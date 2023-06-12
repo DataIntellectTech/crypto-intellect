@@ -100,9 +100,9 @@ if __name__ == "__main__":
         engine.dispose()
 
     if config["save_to_csv"] == True:
-        top_n_coins = finding_top_n_coins()
+        top_n_coins = asyncio.run(finding_top_n_coins())
 
-        list_coins = find_specified_coins(config["list_coins_to_pull"])
+        list_coins = asyncio.run(find_specified_coins(config["list_coins_to_pull"]))
 
         Coins_dataframe = pd.concat([top_n_coins, list_coins], axis=0)
         Coins = Coins_dataframe["Coin"].reset_index(drop=True)
