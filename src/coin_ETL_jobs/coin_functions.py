@@ -12,9 +12,11 @@ import pandas as pd
 from datetime import datetime
 from sqlalchemy.sql import text
 import yaml
+from data_ETL_jobs.exchanges.exchange_functions.limiter import Limiter
 
 
-def finding_top_n_coins():
+@Limiter(calls_limit=1, period=60)
+async def finding_top_n_coins():
     """Function to pull top n (specified in config) coins by market cap from coingecko api and
         return pandas dataframe of results along with datetime stamp of when API was queried.
 
@@ -54,7 +56,8 @@ def finding_top_n_coins():
     return Coins
 
 
-def find_specified_coins(coins):
+@Limiter(calls_limit=1, period=60)
+async def find_specified_coins(coins):
     """Function to pull coins specified in the list_coins_to_save config file from coin_gecko api
 
     Returns:

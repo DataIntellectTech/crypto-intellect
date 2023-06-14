@@ -1,6 +1,6 @@
 #!/bin/bash
 
-if ! [ -x "$(command -v docker)" ]; then
+if ! [[ -x "$(command -v docker)" ]]; then
     echo "Please install docker!"
 	exit 1
 fi
