@@ -10,20 +10,25 @@ set CONFIG_FILEPATH=%1
 set DIR_FILEPATH=%~dp0cryptointellect\
 set CSV_FILEPATH=%DIR_FILEPATH%csv\
 
-mkdir %CSV_FILEPATH%
+mkdir %CSV_FILEPATH% 
 docker rm -f cryptointellect_container
 
 if defined CONFIG_FILEPATH (
-    copy %CONFIG_FILEPATH% %DIR_FILEPATH%
-    echo # escape=` > %DIR_FILEPATH%/Dockerfile
-    echo FROM public.ecr.aws/c5m8g6i6/cryptointellect:latest >> %DIR_FILEPATH%/Dockerfile
-    echo COPY config.yml /src/ >> %DIR_FILEPATH%/Dockerfile 
-    echo RUN python3 src/Initial_startup.py >> %DIR_FILEPATH%/Dockerfile
-    echo CMD ["cron", "-f"] >> %DIR_FILEPATH%/Dockerfile
+    if exist %CONFIG_FILEPATH% (
+        copy %CONFIG_FILEPATH% %DIR_FILEPATH%config.yml
+        echo # escape=` > %DIR_FILEPATH%/Dockerfile
+        echo FROM public.ecr.aws/c5m8g6i6/cryptointellect:latest >> %DIR_FILEPATH%/Dockerfile
+        echo COPY config.yml /src/ >> %DIR_FILEPATH%/Dockerfile 
+        echo RUN python3 src/Initial_startup.py >> %DIR_FILEPATH%/Dockerfile
+        echo CMD ["cron", "-f"] >> %DIR_FILEPATH%/Dockerfile
 
-    cd %DIR_FILEPATH%
-    docker build . -t cryptointellect
-    docker run --name cryptointellect_container -d -v %CSV_FILEPATH%:/src/csv_folder/:rw cryptointellect
+        cd %DIR_FILEPATH%
+        docker build . -t cryptointellect
+        docker run --name cryptointellect_container -d -v %CSV_FILEPATH%:/src/csv_folder/:rw cryptointellect
+    ) else (
+        echo Config file provided does not exist!
+        exit 0
+    )
 ) else (
     docker pull public.ecr.aws/c5m8g6i6/cryptointellect:latest
     docker run --name cryptointellect_container -d -v %CSV_FILEPATH%:/src/csv_folder/:rw public.ecr.aws/c5m8g6i6/cryptointellect:latest
